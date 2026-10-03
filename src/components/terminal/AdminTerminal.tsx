@@ -25,7 +25,7 @@ import {
   ShieldCheck,
   Sun,
   Moon,
-  Plus,
+  Slash,
   Terminal as TerminalIcon,
   Trash2,
   UserRound,
@@ -550,6 +550,19 @@ export default function AdminTerminal({
     });
   };
 
+  const openCommandNamespace = (trigger: "/" | "@") => {
+    setCommandMode(trigger === "@" ? "admin" : "cli");
+    setInput((current) => {
+      const trimmed = current.trimStart();
+      return trigger + trimmed.replace(/^[@/]/, "");
+    });
+    setSelectedSuggestion(0);
+    requestAnimationFrame(() => {
+      inputRef.current?.focus();
+      inputRef.current?.setSelectionRange(1, 1);
+    });
+  };
+
   const executeRaw = async (rawInput: string) => {
     const raw = rawInput.trim();
 
@@ -819,7 +832,6 @@ export default function AdminTerminal({
             Operator session <span className="terminal-session-divider">/</span> {statusLabel}
           </span>
           <h1>Admin Terminal</h1>
-          <p>A little less noise. A little more control.</p>
         </div>
         <div className="terminal-workspace">
           <div className="terminal-transcript-toolbar">
@@ -939,27 +951,21 @@ export default function AdminTerminal({
                     variant="ghost"
                     size="icon"
                     type="button"
-                    className="terminal-plus"
-                    onClick={() => {
-                      setShowHelp((v) => !v);
-                      inputRef.current?.focus();
-                    }}
-                    aria-label="Command reference"
-                    title="Command reference"
+                    className="terminal-command-button"
+                    onClick={() => openCommandNamespace("/")}
+                    aria-label="Show CLI commands"
+                    title="CLI commands (/)"
                   >
-                    <Plus />
+                    <Slash />
                   </Button>
                   <Button
                     variant="ghost"
                     size="icon"
                     type="button"
                     className="terminal-command-button"
-                    onClick={() => {
-                      setInput("@");
-                      inputRef.current?.focus();
-                    }}
+                    onClick={() => openCommandNamespace("@")}
                     aria-label="Show admin actions"
-                    title="Admin actions"
+                    title="Admin actions (@)"
                   >
                     <AtSign />
                   </Button>
@@ -1010,7 +1016,6 @@ export default function AdminTerminal({
       </main>
       <footer className="terminal-page-footer">
         <span>OBYLON</span>
-        <span>Security, without the noise.</span>
         <span>
           <span className="terminal-status-dot" />
           {targetId ? "Connected" : "No target connected"}

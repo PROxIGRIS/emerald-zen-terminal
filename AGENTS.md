@@ -8,3 +8,8 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Terminal architecture
+- Keep the uploaded terminal command registry and executor callback in the terminal module; privileged execution remains the host application's responsibility.
+- Define terminal visuals and theme tokens in src/styles.css; both themes share the same composition.
+- This surface is a deterministic CLI terminal, not an AI conversation; preserve its native command form and log semantics instead of installing AI chat primitives.

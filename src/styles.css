@@ -127,7 +127,10 @@
 }
 .dark .terminal-backdrop {
   mix-blend-mode: screen;
-  opacity: 0.32;
+  opacity: 0.85;
+}
+.dark .terminal-tint {
+  background: linear-gradient(180deg, var(--background) 5%, transparent 85%);
 }
 .terminal-header {
   display: flex;

@@ -11,7 +11,6 @@ import {
   Clipboard,
   Command,
   Copy,
-  CornerDownLeft,
   FileKey2,
   Fingerprint,
   History,
@@ -20,14 +19,9 @@ import {
   Lock,
   Logs,
   Menu,
-  MoreHorizontal,
-  Network,
-  PanelLeft,
   RefreshCw,
   RotateCcw,
   Search,
-  Send,
-  Settings2,
   ShieldCheck,
   Sun,
   Moon,
@@ -534,8 +528,8 @@ export default function AdminTerminal({
         id: makeId("line"),
         kind,
         text,
-        meta,
-        command,
+        ...(meta === undefined ? {} : { meta }),
+        ...(command === undefined ? {} : { command }),
         timestamp: nowTime(),
       },
     ]);
@@ -595,7 +589,7 @@ export default function AdminTerminal({
           namespace: parsed.namespace,
           command: parsed.command,
           args: parsed.args,
-          action: parsed.namespace === "admin" ? (parsed.command as AdminActionName) : undefined,
+          ...(parsed.namespace === "admin" ? { action: parsed.command as AdminActionName } : {}),
         });
 
         if (result?.text) {
@@ -670,7 +664,7 @@ export default function AdminTerminal({
 
     if (suggestionTrigger && suggestions.length > 0 && event.key === "Tab") {
       event.preventDefault();
-      insertSuggestion(activeSuggestion ?? suggestions[0]);
+      if (activeSuggestion) insertSuggestion(activeSuggestion);
       return;
     }
 

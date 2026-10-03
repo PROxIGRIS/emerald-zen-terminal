@@ -1,11 +1,4 @@
-import React, {
-  FormEvent,
-  KeyboardEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import {
   Activity,
   ArrowUp,
@@ -51,12 +44,7 @@ import glow from "@/assets/terminal-glow.jpg";
 export type AdminTerminalMode = "light" | "dark" | "system";
 
 export type AdminActionName =
-  | "lock"
-  | "terminate"
-  | "freeze"
-  | "unfreeze"
-  | "kill_task"
-  | "set_alias";
+  "lock" | "terminate" | "freeze" | "unfreeze" | "kill_task" | "set_alias";
 
 export interface AdminTerminalCommand {
   id: string;
@@ -104,17 +92,18 @@ export interface AdminTerminalProps {
    * Let the host app execute real Supabase/Edge-Function/local CLI actions.
    * The UI intentionally does not perform privileged operations by itself.
    */
-  onExecute?: (
-    context: AdminTerminalExecuteContext
-  ) => Promise<{
-    kind?: TerminalHistoryItem["kind"];
-    text: string;
-    meta?: string;
-  } | void> | {
-    kind?: TerminalHistoryItem["kind"];
-    text: string;
-    meta?: string;
-  } | void;
+  onExecute?: (context: AdminTerminalExecuteContext) =>
+    | Promise<{
+        kind?: TerminalHistoryItem["kind"];
+        text: string;
+        meta?: string;
+      } | void>
+    | {
+        kind?: TerminalHistoryItem["kind"];
+        text: string;
+        meta?: string;
+      }
+    | void;
 
   /**
    * Optional external workstation target. Kept in the page header and can be
@@ -330,13 +319,7 @@ const CLI_COMMANDS: AdminTerminalCommand[] = [
     kind: "cli",
     category: "Authentication",
     icon: <ShieldCheck size={15} />,
-    aliases: [
-      "auth login",
-      "auth request",
-      "auth status",
-      "auth logout",
-      "auth authorize",
-    ],
+    aliases: ["auth login", "auth request", "auth status", "auth logout", "auth authorize"],
   },
 ];
 
@@ -347,10 +330,12 @@ function normalizeQuery(value: string) {
 }
 
 function splitArgs(value: string) {
-  return value
-    .trim()
-    .match(/(?:[^\s"]+|"[^"]*")+/g)
-    ?.map((part) => part.replace(/^"|"$/g, "")) ?? [];
+  return (
+    value
+      .trim()
+      .match(/(?:[^\s"]+|"[^"]*")+/g)
+      ?.map((part) => part.replace(/^"|"$/g, "")) ?? []
+  );
 }
 
 function nowTime() {
@@ -374,9 +359,7 @@ function getCommandFromRaw(raw: string) {
     };
   }
 
-  const withoutPrompt = trimmed
-    .replace(/^obylonc(?:\s+|$)/i, "")
-    .trim();
+  const withoutPrompt = trimmed.replace(/^obylonc(?:\s+|$)/i, "").trim();
 
   if (withoutPrompt.startsWith("@")) {
     const tokens = splitArgs(withoutPrompt.slice(1));
@@ -421,11 +404,7 @@ function getDefaultHistory(): TerminalHistoryItem[] {
   ];
 }
 
-function commandMatches(
-  command: AdminTerminalCommand,
-  query: string,
-  trigger: "@" | "/"
-) {
+function commandMatches(command: AdminTerminalCommand, query: string, trigger: "@" | "/") {
   const normalized = normalizeQuery(query);
   if (!normalized) return true;
 
@@ -436,14 +415,10 @@ function commandMatches(
     ...(command.aliases ?? []),
   ].map((item) => normalizeQuery(item));
 
-  const cleanedTrigger = normalized.startsWith(trigger)
-    ? normalized.slice(1)
-    : normalized;
+  const cleanedTrigger = normalized.startsWith(trigger) ? normalized.slice(1) : normalized;
 
   return candidates.some(
-    (candidate) =>
-      candidate.startsWith(cleanedTrigger) ||
-      candidate.includes(cleanedTrigger)
+    (candidate) => candidate.startsWith(cleanedTrigger) || candidate.includes(cleanedTrigger),
   );
 }
 
@@ -473,10 +448,7 @@ function getSuggestionToken(value: string) {
   };
 }
 
-function commandExampleFor(
-  command: AdminTerminalCommand,
-  trigger: "@" | "/"
-) {
+function commandExampleFor(command: AdminTerminalCommand, trigger: "@" | "/") {
   return `${trigger}${command.syntax}`;
 }
 
@@ -492,7 +464,7 @@ export default function AdminTerminal({
 }: AdminTerminalProps) {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<TerminalHistoryItem[]>(
-    initialHistory?.length ? initialHistory : getDefaultHistory()
+    initialHistory?.length ? initialHistory : getDefaultHistory(),
   );
   const [selectedSuggestion, setSelectedSuggestion] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
@@ -504,10 +476,7 @@ export default function AdminTerminal({
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
 
-  const suggestionToken = useMemo(
-    () => getSuggestionToken(input),
-    [input]
-  );
+  const suggestionToken = useMemo(() => getSuggestionToken(input), [input]);
 
   const suggestionTrigger = suggestionToken?.trigger;
   const suggestionQuery = suggestionToken?.query ?? "";
@@ -518,9 +487,7 @@ export default function AdminTerminal({
     const source = suggestionTrigger === "@" ? ADMIN_ACTIONS : CLI_COMMANDS;
 
     return source
-      .filter((command) =>
-        commandMatches(command, suggestionQuery, suggestionTrigger)
-      )
+      .filter((command) => commandMatches(command, suggestionQuery, suggestionTrigger))
       .slice(0, 9);
   }, [suggestionQuery, suggestionTrigger]);
 
@@ -559,7 +526,7 @@ export default function AdminTerminal({
     kind: TerminalHistoryItem["kind"],
     text: string,
     meta?: string,
-    command?: string
+    command?: string,
   ) => {
     setHistory((previous) => [
       ...previous,
@@ -580,16 +547,12 @@ export default function AdminTerminal({
     const trigger = suggestionToken.trigger;
     const completed = commandExampleFor(command, trigger);
 
-    const nextValue =
-      input.slice(0, suggestionToken.index) + completed + " ";
+    const nextValue = input.slice(0, suggestionToken.index) + completed + " ";
 
     setInput(nextValue);
     requestAnimationFrame(() => {
       inputRef.current?.focus();
-      inputRef.current?.setSelectionRange(
-        nextValue.length,
-        nextValue.length
-      );
+      inputRef.current?.setSelectionRange(nextValue.length, nextValue.length);
     });
   };
 
@@ -608,7 +571,7 @@ export default function AdminTerminal({
         : parsed.namespace === "cli"
           ? "obylonc CLI"
           : "unknown command",
-      raw
+      raw,
     );
 
     setInput("");
@@ -618,7 +581,7 @@ export default function AdminTerminal({
       pushHistory(
         "error",
         "Unknown command namespace.",
-        "Use @<command> for admin actions or /<command> for obylonc."
+        "Use @<command> for admin actions or /<command> for obylonc.",
       );
       return;
     }
@@ -632,25 +595,18 @@ export default function AdminTerminal({
           namespace: parsed.namespace,
           command: parsed.command,
           args: parsed.args,
-          action:
-            parsed.namespace === "admin"
-              ? (parsed.command as AdminActionName)
-              : undefined,
+          action: parsed.namespace === "admin" ? (parsed.command as AdminActionName) : undefined,
         });
 
         if (result?.text) {
-          pushHistory(
-            result.kind ?? "output",
-            result.text,
-            result.meta
-          );
+          pushHistory(result.kind ?? "output", result.text, result.meta);
         } else {
           pushHistory(
             "success",
             "Command accepted by the operator shell.",
             parsed.namespace === "admin"
               ? "Awaiting server-authoritative result"
-              : "Awaiting CLI result"
+              : "Awaiting CLI result",
           );
         }
 
@@ -663,32 +619,22 @@ export default function AdminTerminal({
         pushHistory(
           "success",
           `Queued ${parsed.command}.`,
-          targetId
-            ? `Target: ${targetName} · ${targetId}`
-            : `Target: ${targetName}`
+          targetId ? `Target: ${targetName} · ${targetId}` : `Target: ${targetName}`,
         );
         pushHistory(
           "system",
           "Preview only. No workstation action was performed.",
-          "The UI never performs privileged actions directly."
+          "The UI never performs privileged actions directly.",
         );
       } else {
-        pushHistory(
-          "success",
-          `obylonc ${parsed.command} accepted.`,
-          "Demo shell response"
-        );
-        pushHistory(
-          "output",
-          getDemoCliOutput(parsed.command, parsed.args),
-          "7.0.9-LTS"
-        );
+        pushHistory("success", `obylonc ${parsed.command} accepted.`, "Demo shell response");
+        pushHistory("output", getDemoCliOutput(parsed.command, parsed.args), "7.0.9-LTS");
       }
     } catch (error) {
       pushHistory(
         "error",
         error instanceof Error ? error.message : "Command execution failed.",
-        "The command was not reported as completed."
+        "The command was not reported as completed.",
       );
     } finally {
       setIsRunning(false);
@@ -714,8 +660,7 @@ export default function AdminTerminal({
     ) {
       event.preventDefault();
       setSelectedSuggestion((current) => {
-        const next =
-          event.key === "ArrowDown" ? current + 1 : current - 1;
+        const next = event.key === "ArrowDown" ? current + 1 : current - 1;
         if (next < 0) return suggestions.length - 1;
         if (next >= suggestions.length) return 0;
         return next;
@@ -723,11 +668,7 @@ export default function AdminTerminal({
       return;
     }
 
-    if (
-      suggestionTrigger &&
-      suggestions.length > 0 &&
-      event.key === "Tab"
-    ) {
+    if (suggestionTrigger && suggestions.length > 0 && event.key === "Tab") {
       event.preventDefault();
       insertSuggestion(activeSuggestion ?? suggestions[0]);
       return;
@@ -783,75 +724,310 @@ export default function AdminTerminal({
   const statusLabel = isRunning ? "Executing" : targetId ? "Connected" : "Standby";
 
   return (
-    <section className={`terminal-page ${darkTheme ? "dark" : ""} ${compact ? "terminal-compact" : ""} ${className}`}>
-      <img className="terminal-backdrop" src={glow} alt="" width={1440} height={1200} aria-hidden="true" />
+    <section
+      className={`terminal-page ${darkTheme ? "dark" : ""} ${compact ? "terminal-compact" : ""} ${className}`}
+    >
+      <img
+        className="terminal-backdrop"
+        src={glow}
+        alt=""
+        width={1440}
+        height={1200}
+        aria-hidden="true"
+      />
       <div className="terminal-tint" aria-hidden="true" />
       <header className="terminal-header">
-        <div className="terminal-brand"><div className="terminal-brand-mark"><TerminalIcon size={25} /></div><span>Obylon<span className="terminal-brand-dot">.</span></span></div>
+        <div className="terminal-brand">
+          <div className="terminal-brand-mark">
+            <TerminalIcon size={25} />
+          </div>
+          <span>
+            Obylon<span className="terminal-brand-dot">.</span>
+          </span>
+        </div>
         <div className="terminal-header-actions">
           <span className="terminal-version">7.0.9-LTS</span>
-          <Button variant="ghost" size="icon" className="terminal-icon" onClick={() => setDarkTheme(v => !v)} aria-label={darkTheme ? "Switch to light mode" : "Switch to dark mode"} title={darkTheme ? "Light mode" : "Dark mode"}>{darkTheme ? <Sun /> : <Moon />}</Button>
-          <Button variant="ghost" size="icon" className="terminal-icon" onClick={() => setExpandedMobileHeader(v => !v)} aria-label="Open terminal menu" title="Terminal menu"><Menu /></Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="terminal-icon"
+            onClick={() => setDarkTheme((v) => !v)}
+            aria-label={darkTheme ? "Switch to light mode" : "Switch to dark mode"}
+            title={darkTheme ? "Light mode" : "Dark mode"}
+          >
+            {darkTheme ? <Sun /> : <Moon />}
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="terminal-icon"
+            onClick={() => setExpandedMobileHeader((v) => !v)}
+            aria-label="Open terminal menu"
+            title="Terminal menu"
+          >
+            <Menu />
+          </Button>
         </div>
-        {expandedMobileHeader && <div className="terminal-menu">
-          <div className="terminal-menu-heading">Operator: {username}</div>
-          <div className="terminal-menu-target"><Laptop2 size={15} />{targetName}</div>
-          <Button variant="ghost" onClick={() => {setInput("/status"); setExpandedMobileHeader(false)}}><Activity />Endpoint status</Button>
-          <Button variant="ghost" onClick={() => {setInput("/doctor --deep"); setExpandedMobileHeader(false)}}><Search />Deep diagnostics</Button>
-          <Button variant="ghost" onClick={() => {setInput("/logs --deep"); setExpandedMobileHeader(false)}}><History />Boot story</Button>
-          <Button variant="ghost" onClick={() => {setShowHelp(v => !v); setExpandedMobileHeader(false)}}><CircleHelp />Command reference</Button>
-        </div>}
+        {expandedMobileHeader && (
+          <div className="terminal-menu">
+            <div className="terminal-menu-heading">Operator: {username}</div>
+            <div className="terminal-menu-target">
+              <Laptop2 size={15} />
+              {targetName}
+            </div>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setInput("/status");
+                setExpandedMobileHeader(false);
+              }}
+            >
+              <Activity />
+              Endpoint status
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setInput("/doctor --deep");
+                setExpandedMobileHeader(false);
+              }}
+            >
+              <Search />
+              Deep diagnostics
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setInput("/logs --deep");
+                setExpandedMobileHeader(false);
+              }}
+            >
+              <History />
+              Boot story
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setShowHelp((v) => !v);
+                setExpandedMobileHeader(false);
+              }}
+            >
+              <CircleHelp />
+              Command reference
+            </Button>
+          </div>
+        )}
       </header>
       <main className="terminal-main">
         <div className="terminal-intro">
-          <span className="terminal-session"><span className="terminal-status-dot" />Operator session <span className="terminal-session-divider">/</span> {statusLabel}</span>
+          <span className="terminal-session">
+            <span className="terminal-status-dot" />
+            Operator session <span className="terminal-session-divider">/</span> {statusLabel}
+          </span>
           <h1>Admin Terminal</h1>
           <p>A little less noise. A little more control.</p>
         </div>
         <div className="terminal-workspace">
-          <div className="terminal-transcript-toolbar"><span>{username}@obylon <span className="terminal-path">/ admin</span></span><div>
-            <Button variant="ghost" size="icon" className="terminal-icon" onClick={copyTranscript} aria-label="Copy transcript" title="Copy transcript">{copied ? <Check /> : <Copy />}</Button>
-            <Button variant="ghost" size="icon" className="terminal-icon" onClick={clearTerminal} aria-label="Clear terminal" title="Clear terminal"><Trash2 /></Button>
-          </div></div>
-          <div className="terminal-transcript" ref={transcriptRef} role="log" aria-live="polite" aria-label="Admin terminal transcript">
-            {history.map(item => <TerminalHistoryRow key={item.id} item={item} />)}
-            {isRunning && <div className="terminal-running"><Loader2 className="admin-terminal-spin" size={14} />Awaiting command result…</div>}
+          <div className="terminal-transcript-toolbar">
+            <span>
+              {username}@obylon <span className="terminal-path">/ admin</span>
+            </span>
+            <div>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="terminal-icon"
+                onClick={copyTranscript}
+                aria-label="Copy transcript"
+                title="Copy transcript"
+              >
+                {copied ? <Check /> : <Copy />}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="terminal-icon"
+                onClick={clearTerminal}
+                aria-label="Clear terminal"
+                title="Clear terminal"
+              >
+                <Trash2 />
+              </Button>
+            </div>
           </div>
-          {showHelp && <div className="terminal-help"><div><strong>Command reference</strong><p>Remote actions: @freeze, @unfreeze, @lock, @terminate, @kill_task, @set_alias</p><p>CLI: /status, /doctor, /logs, /version, /auth</p></div><Button variant="ghost" size="icon" aria-label="Close command reference" onClick={() => setShowHelp(false)}><X /></Button></div>}
+          <div
+            className="terminal-transcript"
+            ref={transcriptRef}
+            role="log"
+            aria-live="polite"
+            aria-label="Admin terminal transcript"
+          >
+            {history.map((item) => (
+              <TerminalHistoryRow key={item.id} item={item} />
+            ))}
+            {isRunning && (
+              <div className="terminal-running">
+                <Loader2 className="admin-terminal-spin" size={14} />
+                Awaiting command result…
+              </div>
+            )}
+          </div>
+          {showHelp && (
+            <div className="terminal-help">
+              <div>
+                <strong>Command reference</strong>
+                <p>Remote actions: @freeze, @unfreeze, @lock, @terminate, @kill_task, @set_alias</p>
+                <p>CLI: /status, /doctor, /logs, /version, /auth</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Close command reference"
+                onClick={() => setShowHelp(false)}
+              >
+                <X />
+              </Button>
+            </div>
+          )}
           <div className="terminal-composer-wrap">
-            {suggestionTrigger && suggestions.length > 0 && <div className="terminal-suggestions" role="listbox" aria-label={suggestionTrigger === "@" ? "Admin action suggestions" : "obylonc command suggestions"}>
-              <div className="terminal-suggestions-heading">{suggestionTrigger === "@" ? "Admin actions" : "Obylon commands"}<span>{suggestions.length}</span></div>
-              {suggestions.map((command, index) => <Button variant="ghost" type="button" role="option" aria-selected={index === selectedSuggestion} key={command.id} className={`terminal-suggestion ${index === selectedSuggestion ? "is-selected" : ""}`} onMouseEnter={() => setSelectedSuggestion(index)} onClick={() => insertSuggestion(command)}>
-                {command.icon}<span><strong>{command.label}</strong><small>{command.description}</small></span><code>{commandExampleFor(command, suggestionTrigger)}</code>
-              </Button>)}
-            </div>}
+            {suggestionTrigger && suggestions.length > 0 && (
+              <div
+                className="terminal-suggestions"
+                role="listbox"
+                aria-label={
+                  suggestionTrigger === "@"
+                    ? "Admin action suggestions"
+                    : "obylonc command suggestions"
+                }
+              >
+                <div className="terminal-suggestions-heading">
+                  {suggestionTrigger === "@" ? "Admin actions" : "Obylon commands"}
+                  <span>{suggestions.length}</span>
+                </div>
+                {suggestions.map((command, index) => (
+                  <Button
+                    variant="ghost"
+                    type="button"
+                    role="option"
+                    aria-selected={index === selectedSuggestion}
+                    key={command.id}
+                    className={`terminal-suggestion ${index === selectedSuggestion ? "is-selected" : ""}`}
+                    onMouseEnter={() => setSelectedSuggestion(index)}
+                    onClick={() => insertSuggestion(command)}
+                  >
+                    {command.icon}
+                    <span>
+                      <strong>{command.label}</strong>
+                      <small>{command.description}</small>
+                    </span>
+                    <code>{commandExampleFor(command, suggestionTrigger)}</code>
+                  </Button>
+                ))}
+              </div>
+            )}
             <form className="terminal-composer" onSubmit={handleSubmit}>
-              <textarea ref={inputRef} value={input} onChange={e => setInput(e.target.value)} onKeyDown={handleKeyDown} placeholder="What would you like to run?" aria-label="Admin terminal command" rows={2} spellCheck={false} autoComplete="off" autoCorrect="off" autoCapitalize="off" />
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="What would you like to run?"
+                aria-label="Admin terminal command"
+                rows={2}
+                spellCheck={false}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+              />
               <div className="terminal-composer-footer">
                 <div className="terminal-composer-left">
-                  <Button variant="ghost" size="icon" type="button" className="terminal-plus" onClick={() => {setShowHelp(v => !v); inputRef.current?.focus()}} aria-label="Command reference" title="Command reference"><Plus /></Button>
-                  <Button variant="ghost" size="icon" type="button" className="terminal-command-button" onClick={() => {setInput("@"); inputRef.current?.focus()}} aria-label="Show admin actions" title="Admin actions"><AtSign /></Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
+                    className="terminal-plus"
+                    onClick={() => {
+                      setShowHelp((v) => !v);
+                      inputRef.current?.focus();
+                    }}
+                    aria-label="Command reference"
+                    title="Command reference"
+                  >
+                    <Plus />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
+                    className="terminal-command-button"
+                    onClick={() => {
+                      setInput("@");
+                      inputRef.current?.focus();
+                    }}
+                    aria-label="Show admin actions"
+                    title="Admin actions"
+                  >
+                    <AtSign />
+                  </Button>
                 </div>
                 <div className="terminal-composer-right">
-                  <label className="terminal-mode"><span className="sr-only">Command mode</span><select value={commandMode} aria-label="Command mode" onChange={e => {const next = e.target.value === "admin" ? "admin" : "cli"; setCommandMode(next); setInput(next === "admin" ? "@" : "/"); inputRef.current?.focus()}}><option value="cli">Run CLI</option><option value="admin">Admin</option></select><ChevronDown size={16} /></label>
-                  <Button variant="ghost" size="icon" type="submit" className="terminal-send" disabled={!input.trim() || isRunning} aria-label="Run command" title="Run command">{isRunning ? <Loader2 className="admin-terminal-spin" /> : <ArrowUp />}</Button>
+                  <label className="terminal-mode">
+                    <span className="sr-only">Command mode</span>
+                    <select
+                      value={commandMode}
+                      aria-label="Command mode"
+                      onChange={(e) => {
+                        const next = e.target.value === "admin" ? "admin" : "cli";
+                        setCommandMode(next);
+                        setInput(next === "admin" ? "@" : "/");
+                        inputRef.current?.focus();
+                      }}
+                    >
+                      <option value="cli">Run CLI</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    <ChevronDown size={16} />
+                  </label>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="submit"
+                    className="terminal-send"
+                    disabled={!input.trim() || isRunning}
+                    aria-label="Run command"
+                    title="Run command"
+                  >
+                    {isRunning ? <Loader2 className="admin-terminal-spin" /> : <ArrowUp />}
+                  </Button>
                 </div>
               </div>
             </form>
           </div>
-          <div className="terminal-bottom"><span><ShieldCheck size={13} />{onExecute ? "Authorization-gated session" : "Preview session"}</span><span>obylonc <span className="terminal-bottom-dot">·</span> 7.0.9-LTS</span></div>
+          <div className="terminal-bottom">
+            <span>
+              <ShieldCheck size={13} />
+              {onExecute ? "Authorization-gated session" : "Preview session"}
+            </span>
+            <span>
+              obylonc <span className="terminal-bottom-dot">·</span> 7.0.9-LTS
+            </span>
+          </div>
         </div>
       </main>
-      <footer className="terminal-page-footer"><span>OBYLON</span><span>Security, without the noise.</span><span><span className="terminal-status-dot" />{targetId ? "Connected" : "No target connected"}</span></footer>
+      <footer className="terminal-page-footer">
+        <span>OBYLON</span>
+        <span>Security, without the noise.</span>
+        <span>
+          <span className="terminal-status-dot" />
+          {targetId ? "Connected" : "No target connected"}
+        </span>
+      </footer>
     </section>
   );
 }
 
 function TerminalHistoryRow({ item }: { item: TerminalHistoryItem }) {
-  const rowClass = [
-    "admin-terminal-history-row",
-    `history-${item.kind}`,
-  ].join(" ");
+  const rowClass = ["admin-terminal-history-row", `history-${item.kind}`].join(" ");
 
   if (item.kind === "input") {
     return (
@@ -887,11 +1063,7 @@ function TerminalHistoryRow({ item }: { item: TerminalHistoryItem }) {
         {item.meta && <span className="history-meta">{item.meta}</span>}
       </div>
 
-      {item.timestamp && (
-        <time className="admin-terminal-history-time">
-          {item.timestamp}
-        </time>
-      )}
+      {item.timestamp && <time className="admin-terminal-history-time">{item.timestamp}</time>}
     </div>
   );
 }

@@ -581,11 +581,18 @@
   }
 }
 @media (max-width: 600px) {
+  .terminal-backdrop {
+    height: 48%;
+  }
   .terminal-header {
-    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 14px 18px;
+    gap: 12px;
   }
   .terminal-brand {
-    font-size: 26px;
+    min-width: 0;
+    font-size: 24px;
     gap: 6px;
   }
   .terminal-brand-mark {
@@ -593,6 +600,7 @@
   }
   .terminal-header-actions {
     gap: 5px;
+    flex-shrink: 0;
   }
   .terminal-version {
     display: none;
@@ -602,10 +610,33 @@
     top: 77px;
   }
   .terminal-main {
-    padding: 0 20px;
+    padding: 0 18px 14px;
   }
   .terminal-intro {
-    margin-bottom: 8px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin-bottom: 6px;
+    gap: 10px;
+  }
+  .terminal-intro h1 {
+    grid-column: 1;
+    grid-row: 1;
+    min-width: 0;
+  }
+  .terminal-intro .terminal-session {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .terminal-session-divider {
+    display: none;
+  }
+  .terminal-intro .terminal-session {
+    font-size: 0;
+    gap: 6px;
+  }
+  .terminal-intro .terminal-session::after {
+    content: "Session active";
+    font-size: 11px;
   }
   .terminal-intro h1 {
     font-size: 12px;
@@ -618,44 +649,91 @@
     font-size: 10px;
   }
   .terminal-transcript {
-    padding: 12px 0 18px;
-    font-size: 12px;
+    padding: 14px 2px 20px;
+    font-size: 13px;
+    line-height: 1.65;
+    scrollbar-width: none;
+  }
+  .admin-terminal-history-row {
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+  .admin-terminal-history-content {
+    gap: 5px;
+  }
+  .admin-terminal-history-marker {
+    width: 12px;
+    height: 21px;
+  }
+  .admin-terminal-history-content code {
+    font: inherit;
   }
   .terminal-transcript-toolbar {
     padding: 0 0 4px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .history-meta {
-    font-size: 9px;
+    font-size: 11px;
+    line-height: 1.5;
   }
   .admin-terminal-history-time {
     display: none;
   }
   .terminal-composer-wrap {
-    margin-top: 12px;
+    margin-top: 8px;
   }
   .terminal-composer {
-    border-radius: 27px;
-    padding: 20px 18px 15px;
+    border-radius: 18px;
+    padding: 14px 14px 10px;
+    border-color: var(--composer-border);
+    background: var(--card);
   }
   .terminal-composer textarea {
-    font-size: 15px;
-    height: 60px;
-    min-height: 60px;
+    font-family: var(--font-mono);
+    font-size: 16px;
+    line-height: 1.5;
+    height: 42px;
+    min-height: 42px;
+    resize: none;
+  }
+  .terminal-composer-footer {
+    margin-top: 8px;
+  }
+  .terminal-command-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: var(--muted);
+  }
+  .terminal-command-button svg {
+    width: 18px;
+    height: 18px;
+  }
+  .terminal-send {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  .terminal-mode {
+    font-size: 12px;
+  }
+  .terminal-mode select {
+    width: 85px;
+    min-height: 44px;
   }
   .terminal-composer-right {
-    gap: 9px;
+    gap: 6px;
   }
   .terminal-composer-left {
-    gap: 2px;
+    gap: 6px;
   }
   .terminal-bottom {
-    font-size: 9px;
+    font-size: 10px;
     margin: 10px auto 0;
+    padding: 0 4px;
   }
   .terminal-page-footer {
-    padding: 12px 20px;
-    font-size: 9px;
+    display: none;
   }
   .terminal-suggestion small {
     display: none;

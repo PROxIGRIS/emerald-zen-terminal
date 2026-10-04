@@ -58,6 +58,9 @@
 .dark {
   --background: oklch(0.14 0.008 260);
   --foreground: oklch(0.91 0.006 260);
+  --terminal-text: var(--foreground);
+  --terminal-muted: var(--muted-foreground);
+  --terminal-tint: linear-gradient(180deg, var(--background) 0%, transparent 65%);
   --card: oklch(0.21 0.008 260);
   --primary: oklch(0.74 0.13 164);
   --primary-foreground: oklch(0.17 0.012 164);

@@ -33,7 +33,8 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import glow from "@/assets/terminal-glow.jpg";
+import lightArtwork from "@/assets/obylon-footer-light.webp.asset.json";
+import darkArtwork from "@/assets/obylon-footer-dark.webp.asset.json";
 
 export type AdminTerminalMode = "light" | "dark" | "system";
 
@@ -736,7 +737,7 @@ export default function AdminTerminal({
     >
       <img
         className="terminal-backdrop"
-        src={glow}
+        src={darkTheme ? darkArtwork.url : lightArtwork.url}
         alt=""
         width={1440}
         height={1200}
@@ -834,67 +835,76 @@ export default function AdminTerminal({
           <h1>Admin Terminal</h1>
         </div>
         <div className="terminal-workspace">
-          <div className="terminal-transcript-toolbar">
-            <span>
-              {username}@obylon <span className="terminal-path">/ admin</span>
-            </span>
-            <div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="terminal-icon"
-                onClick={copyTranscript}
-                aria-label="Copy transcript"
-                title="Copy transcript"
-              >
-                {copied ? <Check /> : <Copy />}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="terminal-icon"
-                onClick={clearTerminal}
-                aria-label="Clear terminal"
-                title="Clear terminal"
-              >
-                <Trash2 />
-              </Button>
+          <div className="terminal-console">
+            <div className="terminal-transcript-toolbar">
+              <span className="terminal-console-identity">
+                <span className="terminal-window-dots" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                {username}@obylon <span className="terminal-path">/ admin</span>
+              </span>
+              <div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="terminal-icon"
+                  onClick={copyTranscript}
+                  aria-label="Copy transcript"
+                  title="Copy transcript"
+                >
+                  {copied ? <Check /> : <Copy />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="terminal-icon"
+                  onClick={clearTerminal}
+                  aria-label="Clear terminal"
+                  title="Clear terminal"
+                >
+                  <Trash2 />
+                </Button>
+              </div>
             </div>
-          </div>
-          <div
-            className="terminal-transcript"
-            ref={transcriptRef}
-            role="log"
-            aria-live="polite"
-            aria-label="Admin terminal transcript"
-          >
-            {history.map((item) => (
-              <TerminalHistoryRow key={item.id} item={item} />
-            ))}
-            {isRunning && (
-              <div className="terminal-running">
-                <Loader2 className="admin-terminal-spin" size={14} />
-                Awaiting command result…
+            <div
+              className="terminal-transcript"
+              ref={transcriptRef}
+              role="log"
+              aria-live="polite"
+              aria-label="Admin terminal transcript"
+            >
+              {history.map((item) => (
+                <TerminalHistoryRow key={item.id} item={item} />
+              ))}
+              {isRunning && (
+                <div className="terminal-running">
+                  <Loader2 className="admin-terminal-spin" size={14} />
+                  Awaiting command result…
+                </div>
+              )}
+            </div>
+            {showHelp && (
+              <div className="terminal-help">
+                <div>
+                  <strong>Command reference</strong>
+                  <p>
+                    Remote actions: @freeze, @unfreeze, @lock, @terminate, @kill_task, @set_alias
+                  </p>
+                  <p>CLI: /status, /doctor, /logs, /version, /auth</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Close command reference"
+                  onClick={() => setShowHelp(false)}
+                >
+                  <X />
+                </Button>
               </div>
             )}
           </div>
-          {showHelp && (
-            <div className="terminal-help">
-              <div>
-                <strong>Command reference</strong>
-                <p>Remote actions: @freeze, @unfreeze, @lock, @terminate, @kill_task, @set_alias</p>
-                <p>CLI: /status, /doctor, /logs, /version, /auth</p>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Close command reference"
-                onClick={() => setShowHelp(false)}
-              >
-                <X />
-              </Button>
-            </div>
-          )}
           <div className="terminal-composer-wrap">
             {suggestionTrigger && suggestions.length > 0 && (
               <div
@@ -937,7 +947,7 @@ export default function AdminTerminal({
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="What would you like to run?"
+                placeholder="Enter a command…"
                 aria-label="Admin terminal command"
                 rows={2}
                 spellCheck={false}

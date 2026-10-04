@@ -836,68 +836,74 @@ export default function AdminTerminal({
         </div>
         <div className="terminal-workspace">
           <div className="terminal-console">
-          <div className="terminal-transcript-toolbar">
-            <span className="terminal-console-identity">
-              <span className="terminal-window-dots" aria-hidden="true"><i /><i /><i /></span>
-              {username}@obylon <span className="terminal-path">/ admin</span>
-            </span>
-            <div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="terminal-icon"
-                onClick={copyTranscript}
-                aria-label="Copy transcript"
-                title="Copy transcript"
-              >
-                {copied ? <Check /> : <Copy />}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="terminal-icon"
-                onClick={clearTerminal}
-                aria-label="Clear terminal"
-                title="Clear terminal"
-              >
-                <Trash2 />
-              </Button>
+            <div className="terminal-transcript-toolbar">
+              <span className="terminal-console-identity">
+                <span className="terminal-window-dots" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </span>
+                {username}@obylon <span className="terminal-path">/ admin</span>
+              </span>
+              <div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="terminal-icon"
+                  onClick={copyTranscript}
+                  aria-label="Copy transcript"
+                  title="Copy transcript"
+                >
+                  {copied ? <Check /> : <Copy />}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="terminal-icon"
+                  onClick={clearTerminal}
+                  aria-label="Clear terminal"
+                  title="Clear terminal"
+                >
+                  <Trash2 />
+                </Button>
+              </div>
             </div>
-          </div>
-          <div
-            className="terminal-transcript"
-            ref={transcriptRef}
-            role="log"
-            aria-live="polite"
-            aria-label="Admin terminal transcript"
-          >
-            {history.map((item) => (
-              <TerminalHistoryRow key={item.id} item={item} />
-            ))}
-            {isRunning && (
-              <div className="terminal-running">
-                <Loader2 className="admin-terminal-spin" size={14} />
-                Awaiting command result…
+            <div
+              className="terminal-transcript"
+              ref={transcriptRef}
+              role="log"
+              aria-live="polite"
+              aria-label="Admin terminal transcript"
+            >
+              {history.map((item) => (
+                <TerminalHistoryRow key={item.id} item={item} />
+              ))}
+              {isRunning && (
+                <div className="terminal-running">
+                  <Loader2 className="admin-terminal-spin" size={14} />
+                  Awaiting command result…
+                </div>
+              )}
+            </div>
+            {showHelp && (
+              <div className="terminal-help">
+                <div>
+                  <strong>Command reference</strong>
+                  <p>
+                    Remote actions: @freeze, @unfreeze, @lock, @terminate, @kill_task, @set_alias
+                  </p>
+                  <p>CLI: /status, /doctor, /logs, /version, /auth</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Close command reference"
+                  onClick={() => setShowHelp(false)}
+                >
+                  <X />
+                </Button>
               </div>
             )}
-          </div>
-          {showHelp && (
-            <div className="terminal-help">
-              <div>
-                <strong>Command reference</strong>
-                <p>Remote actions: @freeze, @unfreeze, @lock, @terminate, @kill_task, @set_alias</p>
-                <p>CLI: /status, /doctor, /logs, /version, /auth</p>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                aria-label="Close command reference"
-                onClick={() => setShowHelp(false)}
-              >
-                <X />
-              </Button>
-            </div>
-          )}
           </div>
           <div className="terminal-composer-wrap">
             {suggestionTrigger && suggestions.length > 0 && (

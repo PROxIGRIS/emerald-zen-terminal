@@ -931,7 +931,7 @@ export default function AdminTerminal({
                     onMouseEnter={() => setSelectedSuggestion(index)}
                     onClick={() => insertSuggestion(command)}
                   >
-                    {command.icon}
+                    <span className="terminal-suggestion-icon" aria-hidden="true">{command.icon}</span>
                     <span>
                       <strong>{command.label}</strong>
                       <small>{command.description}</small>
@@ -961,7 +961,7 @@ export default function AdminTerminal({
                     variant="ghost"
                     size="icon"
                     type="button"
-                    className="terminal-command-button"
+                    className={`terminal-command-button ${suggestionTrigger === "/" ? "is-active" : ""}`}
                     onClick={() => openCommandNamespace("/")}
                     aria-label="Show CLI commands"
                     title="CLI commands (/)"
@@ -972,7 +972,7 @@ export default function AdminTerminal({
                     variant="ghost"
                     size="icon"
                     type="button"
-                    className="terminal-command-button"
+                    className={`terminal-command-button ${suggestionTrigger === "@" ? "is-active" : ""}`}
                     onClick={() => openCommandNamespace("@")}
                     aria-label="Show admin actions"
                     title="Admin actions (@)"

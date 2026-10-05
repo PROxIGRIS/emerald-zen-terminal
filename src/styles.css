@@ -31,44 +31,47 @@
 }
 :root {
   --background: oklch(1 0 0);
-  --foreground: oklch(0.34 0.014 260);
+  --foreground: oklch(0.383 0.012 267);
   --card: oklch(0.995 0.002 260);
-  --primary: oklch(0.65 0.13 164);
+  --primary: oklch(0.692 0.157 260);
   --primary-foreground: oklch(1 0 0);
   --muted: oklch(0.955 0.004 260);
   --muted-foreground: oklch(0.5 0.015 260);
-  --accent: oklch(0.94 0.022 164);
+  --accent: oklch(0.96 0.016 260);
   --destructive: oklch(0.55 0.19 28);
   --border: oklch(0.86 0.008 260 / 0.6);
   --terminal-text: var(--foreground);
   --terminal-muted: var(--muted-foreground);
-  --terminal-success: oklch(0.46 0.105 164);
+  --terminal-success: var(--foreground);
   --terminal-system: oklch(0.47 0.08 250);
   --console-surface: oklch(1 0 0 / 0.86);
   --console-toolbar: oklch(1 0 0 / 0.48);
   --console-border: oklch(1 0 0 / 0.9);
   --console-dot: oklch(0.81 0.008 260);
   --console-shadow: 0 18px 60px -24px oklch(0.3 0.025 260 / 0.22);
-  --composer-surface: oklch(1 0 0 / 0.94);
-  --composer-border: oklch(1 0 0 / 0.95);
-  --composer-shadow: 0 12px 38px -18px oklch(0.3 0.03 260 / 0.25);
+  --composer-surface: oklch(1 0 0);
+  --composer-border: oklch(0.91 0.004 260);
+  --composer-shadow: 0 2px 6px oklch(0.2 0 0 / 0.04);
+  --run-surface: oklch(0.182 0.005 260);
+  --run-foreground: oklch(1 0 0);
+  --composer-divider: oklch(0.975 0.002 260);
   --popup-shadow: 0 12px 48px oklch(0.25 0.025 260 / 0.15);
   --terminal-tint: linear-gradient(180deg, var(--background) 0%, transparent 65%);
 }
 .dark {
-  --background: oklch(0.14 0.008 260);
+  --background: oklch(0.182 0.005 260);
   --foreground: oklch(0.91 0.006 260);
   --terminal-text: var(--foreground);
   --terminal-muted: var(--muted-foreground);
   --terminal-tint: linear-gradient(180deg, var(--background) 0%, transparent 65%);
   --card: oklch(0.21 0.008 260);
-  --primary: oklch(0.74 0.13 164);
-  --primary-foreground: oklch(0.17 0.012 164);
+  --primary: oklch(0.692 0.157 260);
+  --primary-foreground: oklch(0.182 0.005 260);
   --muted: oklch(0.27 0.008 260);
   --muted-foreground: oklch(0.7 0.015 260);
-  --accent: oklch(0.29 0.025 164);
+  --accent: oklch(0.29 0.028 260);
   --border: oklch(0.6 0.012 260 / 0.25);
-  --terminal-success: oklch(0.77 0.12 164);
+  --terminal-success: var(--foreground);
   --terminal-system: oklch(0.77 0.07 250);
   --destructive: oklch(0.75 0.14 28);
   --console-surface: oklch(0.17 0.008 260 / 0.88);
@@ -76,9 +79,12 @@
   --console-border: oklch(0.7 0.012 260 / 0.18);
   --console-dot: oklch(0.44 0.012 260);
   --console-shadow: 0 18px 60px -24px oklch(0.05 0 0 / 0.6);
-  --composer-surface: oklch(0.21 0.008 260 / 0.96);
-  --composer-border: oklch(0.65 0.012 260 / 0.28);
-  --composer-shadow: 0 12px 38px -18px oklch(0.05 0 0 / 0.6);
+  --composer-surface: oklch(0.23 0.006 260);
+  --composer-border: oklch(0.34 0.008 260);
+  --composer-shadow: 0 2px 8px oklch(0.05 0 0 / 0.16);
+  --run-surface: oklch(0.96 0.002 260);
+  --run-foreground: oklch(0.182 0.005 260);
+  --composer-divider: oklch(0.28 0.005 260);
   --popup-shadow: 0 12px 48px oklch(0.08 0 0 / 0.4);
 }
 @layer base {
@@ -427,16 +433,21 @@
 }
 .terminal-composer {
   border: 1px solid var(--composer-border);
-  border-radius: 20px;
+  border-radius: 12px;
   background: var(--composer-surface);
-  padding: 18px 22px 14px;
+  padding: 0;
+  overflow: hidden;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
   backdrop-filter: blur(24px);
   box-shadow: var(--composer-shadow);
 }
 .terminal-composer textarea {
   width: 100%;
-  height: 48px;
-  min-height: 48px;
+  height: 92px;
+  min-height: 92px;
+  padding: 16px 18px;
   max-height: 150px;
   display: block;
   resize: none;
@@ -455,7 +466,10 @@
   outline: none;
 }
 .terminal-composer:focus-within {
-  border-color: var(--primary);
+  border-color: var(--foreground);
+  box-shadow:
+    var(--composer-shadow),
+    0 0 0 1px color-mix(in oklab, var(--foreground) 15%, transparent);
 }
 .terminal-composer-footer,
 .terminal-composer-left,
@@ -465,27 +479,32 @@
 }
 .terminal-composer-footer {
   justify-content: space-between;
-  margin-top: 13px;
+  margin-top: 0;
+  padding: 10px 14px;
+  border-top: 1px solid var(--composer-divider);
 }
 .terminal-composer-left {
   gap: 8px;
 }
 .terminal-composer-right {
-  gap: 18px;
+  gap: 12px;
 }
 .terminal-command-button {
-  color: var(--foreground);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  width: 44px;
-  height: 44px;
+  color: var(--muted-foreground);
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
 }
 .terminal-mode {
   display: flex;
   align-items: center;
   gap: 7px;
   color: var(--muted-foreground);
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--muted);
+  border-radius: 999px;
   position: relative;
 }
 .terminal-mode select {
@@ -493,8 +512,8 @@
   background: transparent;
   border: 0;
   color: inherit;
-  padding: 6px 25px 6px 6px;
-  width: 100px;
+  padding: 7px 28px 7px 12px;
+  width: 104px;
 }
 .terminal-mode select option {
   background: var(--card);
@@ -502,18 +521,18 @@
 }
 .terminal-mode svg {
   position: absolute;
-  right: 5px;
+  right: 10px;
   pointer-events: none;
 }
 .terminal-send {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  color: var(--primary-foreground);
-  background: var(--primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  color: var(--run-foreground);
+  background: var(--run-surface);
 }
 .terminal-send:hover {
-  background: var(--primary);
+  background: var(--run-surface);
   opacity: 0.85;
 }
 .terminal-send:disabled {
@@ -585,20 +604,23 @@
   z-index: 7;
   bottom: calc(100% + 10px);
   width: 100%;
-  max-height: 330px;
+  max-height: min(330px, 42dvh);
   overflow-y: auto;
   border: 1px solid var(--border);
-  background: var(--card);
+  background: var(--composer-surface);
   box-shadow: var(--popup-shadow);
   border-radius: 8px;
-  padding: 8px;
+  padding: 6px;
+  animation: suggestions-enter 140ms ease-out;
 }
 .terminal-suggestions-heading {
   display: flex;
   justify-content: space-between;
   font-size: 11px;
   color: var(--muted-foreground);
-  padding: 9px;
+  padding: 9px 10px 11px;
+  border-bottom: 1px solid var(--composer-divider);
+  margin-bottom: 4px;
 }
 .terminal-suggestion {
   display: flex;
@@ -606,12 +628,14 @@
   justify-content: flex-start;
   align-items: center;
   height: auto;
-  padding: 12px;
+  padding: 10px;
+  min-height: 62px;
+  border-radius: 6px;
   gap: 12px;
   white-space: normal;
   text-align: left;
 }
-.terminal-suggestion > span {
+.terminal-suggestion > span:not(.terminal-suggestion-icon) {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -622,7 +646,8 @@
   font-weight: 600;
 }
 .terminal-suggestion small {
-  font-size: 10px;
+  font-size: 11px;
+  line-height: 1.5;
   color: var(--muted-foreground);
   font-weight: 400;
   margin-top: 4px;
@@ -630,11 +655,41 @@
 .terminal-suggestion code {
   color: var(--terminal-text);
   font-size: 10px;
-  max-width: 38%;
+  max-width: 32%;
+  flex-shrink: 0;
+  font-family: var(--font-mono);
   overflow-wrap: anywhere;
 }
 .terminal-suggestion.is-selected {
   background: var(--accent);
+}
+.terminal-suggestion-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border-radius: 6px;
+}
+.terminal-suggestion.is-selected .terminal-suggestion-icon {
+  color: var(--primary);
+  background: color-mix(in oklab, var(--primary) 12%, var(--composer-surface));
+}
+.terminal-command-button.is-active {
+  background: var(--accent);
+  color: var(--foreground);
+}
+@keyframes suggestions-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .admin-terminal-spin {
   animation: terminal-spin 1s linear infinite;
@@ -756,8 +811,8 @@
     gap: 6px;
   }
   .terminal-composer {
-    border-radius: 18px;
-    padding: 14px 14px 10px;
+    border-radius: 12px;
+    padding: 0;
     border-color: var(--composer-border);
     background: var(--composer-surface);
   }
@@ -765,18 +820,20 @@
     font-family: var(--font-mono);
     font-size: 16px;
     line-height: 1.5;
-    height: 42px;
-    min-height: 42px;
+    height: 86px;
+    min-height: 86px;
+    padding: 16px;
     resize: none;
   }
   .terminal-composer-footer {
-    margin-top: 8px;
+    margin-top: 0;
+    padding: 8px 10px;
   }
   .terminal-command-button {
     width: 44px;
     height: 44px;
-    border-radius: 8px;
-    background: var(--muted);
+    border-radius: 6px;
+    background: transparent;
   }
   .terminal-command-button svg {
     width: 18px;
@@ -785,13 +842,13 @@
   .terminal-send {
     width: 44px;
     height: 44px;
-    border-radius: 12px;
+    border-radius: 50%;
   }
   .terminal-mode {
     font-size: 12px;
   }
   .terminal-mode select {
-    width: 85px;
+    width: 98px;
     min-height: 44px;
   }
   .terminal-composer-right {
@@ -808,8 +865,17 @@
   .terminal-page-footer {
     display: none;
   }
+  .terminal-suggestion {
+    gap: 10px;
+    min-height: 64px;
+  }
   .terminal-suggestion small {
-    display: none;
+    display: block;
+    font-size: 10px;
+  }
+  .terminal-suggestion code {
+    max-width: 28%;
+    font-size: 9px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

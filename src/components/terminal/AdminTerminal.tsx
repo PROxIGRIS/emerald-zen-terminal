@@ -33,8 +33,6 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import lightArtwork from "@/assets/obylon-footer-light.webp.asset.json";
-import darkArtwork from "@/assets/obylon-footer-dark.webp.asset.json";
 
 export type AdminTerminalMode = "light" | "dark" | "system";
 
@@ -737,7 +735,7 @@ export default function AdminTerminal({
     >
       <img
         className="terminal-backdrop"
-        src={darkTheme ? darkArtwork.url : lightArtwork.url}
+        src={darkTheme ? "/obylon-footer-dark.webp" : "/obylon-footer-light.webp"}
         alt=""
         width={1440}
         height={1200}

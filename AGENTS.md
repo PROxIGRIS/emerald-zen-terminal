@@ -16,3 +16,4 @@
 - Use a viewport-height centered workspace with an expanding glass terminal and a separate bottom command composer, following the selected prismatic design while keeping logs primary.
 - Serve uploaded theme artwork directly from public/ and select its root-relative URL with the terminal theme so both images load without a CDN dependency.
 - This surface is a deterministic CLI terminal, not an AI conversation; preserve its native command form and log semantics instead of installing AI chat primitives.
+- Keep the extracted mobile dock in MobileTerminalDock with terminal callbacks, not host-only routes; reserve its own flex row and hide it for the visual-viewport keyboard so navigation cannot cover the composer.

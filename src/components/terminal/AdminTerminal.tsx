@@ -33,6 +33,7 @@ import {
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MobileTerminalDock } from "./MobileTerminalDock";
 
 export type AdminTerminalMode = "light" | "dark" | "system";
 
@@ -468,6 +469,26 @@ export default function AdminTerminal({
   const [commandMode, setCommandMode] = useState<"cli" | "admin">("cli");
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
   const transcriptRef = useRef<HTMLDivElement | null>(null);
+  const pageRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+    const updateViewport = () => {
+      const page = pageRef.current;
+      if (!page) return;
+      const keyboardOpen = window.innerHeight - viewport.height > 120;
+      page.style.setProperty("--terminal-visible-height", `${viewport.height}px`);
+      page.dataset.keyboard = keyboardOpen ? "open" : "closed";
+    };
+    updateViewport();
+    viewport.addEventListener("resize", updateViewport);
+    viewport.addEventListener("scroll", updateViewport);
+    return () => {
+      viewport.removeEventListener("resize", updateViewport);
+      viewport.removeEventListener("scroll", updateViewport);
+    };
+  }, []);
 
   const suggestionToken = useMemo(() => getSuggestionToken(input), [input]);
 
@@ -731,6 +752,7 @@ export default function AdminTerminal({
 
   return (
     <section
+      ref={pageRef}
       className={`terminal-page ${darkTheme ? "dark" : ""} ${compact ? "terminal-compact" : ""} ${className}`}
     >
       <img
@@ -1022,6 +1044,22 @@ export default function AdminTerminal({
           </div>
         </div>
       </main>
+      <MobileTerminalDock
+        darkTheme={darkTheme}
+        namespace={suggestionTrigger}
+        onNamespace={openCommandNamespace}
+        onTerminal={() => {
+          inputRef.current?.blur();
+          transcriptRef.current?.focus();
+          transcriptRef.current?.scrollTo({ top: transcriptRef.current.scrollHeight, behavior: "smooth" });
+        }}
+        onCommand={(command) => {
+          setInput(command);
+          inputRef.current?.focus();
+        }}
+        onTheme={() => setDarkTheme((value) => !value)}
+        onReference={() => setShowHelp((value) => !value)}
+      />
       <footer className="terminal-page-footer">
         <span>OBYLON</span>
         <span>

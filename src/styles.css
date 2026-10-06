@@ -1282,3 +1282,78 @@
   .terminal-suggestion small { font-size: 10px; white-space: normal; }
   .terminal-suggestion code { font-size: 9px; }
 }
+
+/* The uploaded Shell dock is a separate flex row, never an overlay on the composer. */
+:root {
+  --dock-surface: color-mix(in oklab, var(--background) 96%, transparent);
+  --dock-shadow: 0 16px 38px color-mix(in oklab, var(--design-shadow-ink) 15%, transparent);
+  --dock-active-shadow: 0 6px 18px color-mix(in oklab, var(--design-shadow-ink) 14%, transparent);
+}
+.terminal-dock-region { display: none; }
+@media (max-width: 600px) {
+  .terminal-page {
+    height: var(--terminal-visible-height, 100dvh);
+    min-height: 0;
+  }
+  .terminal-header { flex-shrink: 0; }
+  .terminal-main { padding-bottom: 0; }
+  .terminal-bottom { margin-top: 7px; }
+  .terminal-dock-region {
+    display: block;
+    position: relative;
+    flex-shrink: 0;
+    width: min(384px, calc(100% - 28px));
+    margin: 12px auto 0;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 9;
+  }
+  .terminal-mobile-dock {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) repeat(3, minmax(0, 1fr));
+    gap: 2px;
+    padding: 6px;
+    border: 1px solid var(--border);
+    border-radius: 26px;
+    background: var(--dock-surface);
+    box-shadow: var(--dock-shadow);
+    backdrop-filter: blur(22px);
+  }
+  .terminal-dock-item {
+    min-width: 0;
+    height: 48px;
+    padding: 0 8px;
+    border-radius: 999px;
+    color: var(--muted-foreground);
+    gap: 6px;
+    touch-action: manipulation;
+    transition: color 180ms ease, background-color 180ms ease, transform 180ms ease;
+  }
+  .terminal-dock-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+  .terminal-dock-item span { min-width: 0; overflow: hidden; text-overflow: ellipsis; font-size: 11px; font-weight: 600; }
+  .terminal-dock-item:hover { background: var(--muted); color: var(--foreground); }
+  .terminal-dock-item.is-active, .terminal-dock-item.is-active:hover { background: var(--foreground); color: var(--background); box-shadow: var(--dock-active-shadow); }
+  .terminal-dock-item:active { transform: scale(0.975); }
+  .terminal-dock-more {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: var(--composer-surface);
+    box-shadow: var(--popup-shadow);
+    max-height: min(360px, 60dvh);
+    overflow-y: auto;
+  }
+  .terminal-dock-more-heading { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; padding-left: 10px; font-size: 12px; }
+  .terminal-dock-more-grid { display: grid; gap: 2px; }
+  .terminal-dock-more-grid button { display: grid; grid-template-columns: 18px minmax(0, 1fr) 16px; justify-content: stretch; text-align: left; height: 44px; font-size: 12px; }
+  .terminal-dock-more-grid button:hover { background: var(--muted); }
+  .terminal-dock-more-grid button svg:last-child { color: var(--muted-foreground); }
+  .terminal-page[data-keyboard="open"] .terminal-dock-region { display: none; }
+  .terminal-page[data-keyboard="open"] .terminal-main { padding-bottom: 8px; }
+  .terminal-page[data-keyboard="open"] .terminal-header { padding-top: 8px; padding-bottom: 8px; }
+  .terminal-page[data-keyboard="open"] .terminal-bottom { display: none; }
+  .terminal-page[data-keyboard="open"] .terminal-suggestions { max-height: min(240px, 45dvh); }
+}

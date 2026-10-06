@@ -479,7 +479,7 @@ export default function AdminTerminal({
       if (!page) return;
       const keyboardOpen = window.innerHeight - viewport.height > 120;
       page.style.setProperty("--terminal-visible-height", `${viewport.height}px`);
-      page.dataset.keyboard = keyboardOpen ? "open" : "closed";
+      page.dataset["keyboard"] = keyboardOpen ? "open" : "closed";
     };
     updateViewport();
     viewport.addEventListener("resize", updateViewport);

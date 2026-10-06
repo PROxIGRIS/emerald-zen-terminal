@@ -1289,6 +1289,9 @@
   --dock-shadow: 0 16px 38px color-mix(in oklab, var(--design-shadow-ink) 15%, transparent);
   --dock-active-shadow: 0 6px 18px color-mix(in oklab, var(--design-shadow-ink) 14%, transparent);
 }
+.dark {
+  --dock-surface: color-mix(in oklab, var(--background) 96%, transparent);
+}
 .terminal-dock-region { display: none; }
 @media (max-width: 600px) {
   .terminal-page {

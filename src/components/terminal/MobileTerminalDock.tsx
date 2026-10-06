@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 
 interface MobileTerminalDockProps {
   darkTheme: boolean;
-  namespace?: "/" | "@";
+  namespace: "/" | "@" | undefined;
   onNamespace: (namespace: "/" | "@") => void;
   onTerminal: () => void;
   onCommand: (command: string) => void;

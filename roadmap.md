@@ -1,4 +1,4 @@
 # Mobile terminal navigation
-- [ ] Adapt the uploaded floating dock to existing terminal actions.
-- [ ] Reserve separate command-box and navigation space, including the phone keyboard and safe area.
-- [ ] Verify commands, More options, theme switching, and non-overlap at narrow mobile sizes.
+- [x] Adapt the uploaded floating dock to existing terminal actions.
+- [x] Reserve separate command-box and navigation space, including visual-viewport keyboard handling and safe area.
+- [x] Verify commands, More options, theme switching, and non-overlap at 393px and 320px; keyboard behavior checked with a simulated viewport reduction.

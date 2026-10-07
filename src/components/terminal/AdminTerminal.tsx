@@ -905,6 +905,14 @@ export default function AdminTerminal({
                 </div>
               )}
             </div>
+            <div className="terminal-console-rail">
+              <span className="terminal-rail-state"><span className="terminal-status-dot" />{isRunning ? "Executing" : "Ready"}<span className="terminal-rail-count">{history.length} entries</span></span>
+              <div className="terminal-quick-actions" aria-label="Quick terminal commands">
+                <Button variant="ghost" size="sm" type="button" onClick={() => { setInput("/status"); inputRef.current?.focus(); }} title="Prepare status command"><Activity />Status</Button>
+                <Button variant="ghost" size="sm" type="button" onClick={() => { setInput("/doctor"); inputRef.current?.focus(); }} title="Prepare diagnostics command"><ShieldCheck />Doctor</Button>
+                <Button variant="ghost" size="sm" type="button" onClick={() => { setInput("/logs"); inputRef.current?.focus(); }} title="Prepare logs command"><Logs />Logs</Button>
+              </div>
+            </div>
             {showHelp && (
               <div className="terminal-help">
                 <div>
@@ -937,7 +945,7 @@ export default function AdminTerminal({
                 }
               >
                 <div className="terminal-suggestions-heading">
-                  {suggestionTrigger === "@" ? "Admin actions" : "Obylon commands"}
+                   <span className="terminal-suggestions-title"><span className="terminal-status-dot" />{suggestionTrigger === "@" ? "Admin actions" : "Obylon commands"}</span>
                   <span>{suggestions.length}</span>
                 </div>
                 {suggestions.map((command, index) => (
@@ -956,7 +964,7 @@ export default function AdminTerminal({
                       <strong>{command.label}</strong>
                       <small>{command.description}</small>
                     </span>
-                    <code>{commandExampleFor(command, suggestionTrigger)}</code>
+                    <code className="terminal-suggestion-syntax">{commandExampleFor(command, suggestionTrigger)}</code>
                   </Button>
                 ))}
               </div>

@@ -18,3 +18,4 @@
 - This surface is a deterministic CLI terminal, not an AI conversation; preserve its native command form and log semantics instead of installing AI chat primitives.
 - Keep the extracted mobile dock in MobileTerminalDock with terminal callbacks, not host-only routes; reserve its own flex row and hide it for the visual-viewport keyboard so navigation cannot cover the composer.
 - Implement entrance motion with CSS clipping rather than changing layout height; disable decorative motion for reduced-motion users so the transcript and mobile composer remain stable and usable.
+- Derive input highlighting and display-only argument hints from the command registry; keep the native textarea authoritative so hints never enter execution and workstation mentions never trigger command search.

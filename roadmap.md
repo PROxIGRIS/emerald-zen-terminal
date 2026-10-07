@@ -7,3 +7,8 @@
 - [x] Refine existing glass surface, transcript hierarchy, composer, and suggestions.
 - [x] Add rolling entrance with reduced-motion support and useful command shortcuts.
 - [x] Verify desktop and mobile in both themes, command execution, and navigation clearance.
+
+# Command-aware input
+- [ ] Color command names, targets, and options consistently in input, suggestions, and transcript.
+- [ ] Show registry-linked, display-only argument hints; keep workstation mentions separate from command search.
+- [ ] Verify typed and selected commands, advancing hints, and both themes.

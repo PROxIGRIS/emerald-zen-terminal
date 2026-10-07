@@ -4,6 +4,6 @@
 - [x] Verify commands, More options, theme switching, and non-overlap at 393px and 320px; keyboard behavior checked with a simulated viewport reduction.
 
 # Terminal visual upgrade
-- [ ] Refine existing glass surface, transcript hierarchy, composer, and suggestions.
-- [ ] Add rolling entrance with reduced-motion support and useful command shortcuts.
-- [ ] Verify desktop and mobile in both themes, command execution, and navigation clearance.
+- [x] Refine existing glass surface, transcript hierarchy, composer, and suggestions.
+- [x] Add rolling entrance with reduced-motion support and useful command shortcuts.
+- [x] Verify desktop and mobile in both themes, command execution, and navigation clearance.
